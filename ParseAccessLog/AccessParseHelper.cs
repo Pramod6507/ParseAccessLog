@@ -70,24 +70,32 @@ namespace ParseAccessLog
 
         public static void WriteReportToFile(List<KeyValuePair<int, string>> sortedAccessCount, string location)
         {
-            FileInfo fileInfo = new FileInfo(location);
-
-            if (fileInfo.Exists)
+            try
             {
-                fileInfo.Delete();
-            }
+                FileInfo fileInfo = new FileInfo(location);
 
-            using (StreamWriter sw = fileInfo.CreateText())
-            {
-                sw.WriteLine("New file created: {0}", DateTime.Now.ToString());
-                sw.WriteLine("===============================================================================================================");
-                sw.WriteLine("Final IP List");
-                sw.WriteLine("===============================================================================================================");
-                foreach (var countPair in sortedAccessCount)
+                if (fileInfo.Exists)
                 {
-                    sw.WriteLine(string.Join(", ", countPair.Key, countPair.Value));
+                    fileInfo.Delete();
                 }
-                sw.WriteLine("End of file");
+
+                using (StreamWriter sw = fileInfo.CreateText())
+                {
+                    sw.WriteLine("New file created: {0}", DateTime.Now.ToString());
+                    sw.WriteLine("==============================================");
+                    sw.WriteLine("Final IP List");
+                    sw.WriteLine("==============================================");
+                    foreach (var countPair in sortedAccessCount)
+                    {
+                        sw.WriteLine(string.Join(", ", countPair.Key, countPair.Value));
+                    }
+                    sw.WriteLine("End of file");
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.ToString());
+                Console.WriteLine("File write error. Please run Visual Studio as Admin!");
             }
         }
 
